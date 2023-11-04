@@ -88,21 +88,15 @@ public class EmployeeConverter {
      * @param e DTOモデル（コピー先）
      * @param ev Viewモデル（コピー元）
      */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static void copyViewToModei(Employee e, EmployeeView ev) {
+        e.setId(ev.getId());
+        e.setCode(ev.getCode());
+        e.setName(ev.getName());
+        e.setPassword(ev.getPassword());
+        e.setAdminFlag(ev.getAdminFlag());
+        e.setCreatedAt(ev.getCreatedAt());
+        e.setUpdateedAt(ev.getUpdatedAt());
+        e.setDeleteFlag(ev.getDeleteFlag());
+    }
 
 }
