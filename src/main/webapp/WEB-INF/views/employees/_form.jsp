@@ -32,7 +32,7 @@
 
 <%-- パスワードを入力するためのフォームを作成 --%>
 <label for="${AttributeConst.EMP_PASS.getValue()}">パスワード</label><br>
-<input type="text" name="${AttributeConst.EMP_PASS.getValue()}" id="${AttributeConst.EMP_PASS.getValue()}">
+<input type="password" name="${AttributeConst.EMP_PASS.getValue()}" id="${AttributeConst.EMP_PASS.getValue()}">
 <br><br>
 
 <%-- 権限を入力するためのセレクトボックスを作成 --%>
