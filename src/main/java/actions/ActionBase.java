@@ -17,7 +17,7 @@ import constants.PropertyConst;
 
 /**
  * 各Actionクラスの親クラス。共通処理を行う。
- *
+ * 抽象クラス
  */
 public abstract class ActionBase {
     protected ServletContext context;
@@ -41,7 +41,7 @@ public abstract class ActionBase {
     }
 
     /**
-     * フロントコントローラから呼び出されるメソッド
+     * フロントコントローラから呼び出されるメソッド（抽象メソッド）
      * @throws ServletException
      * @throws IOException
      */
