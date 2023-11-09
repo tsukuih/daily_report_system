@@ -57,7 +57,7 @@
             </c:forEach>
         </div>
 
-        <p>新規従業員の登録</p>
+        <p><a href="<c:url value='?action=${actEmp}&command=${commNew}' />">新規従業員の登録</a></p>
 
     </c:param>
 </c:import>
