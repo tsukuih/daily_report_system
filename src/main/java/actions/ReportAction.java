@@ -1,6 +1,7 @@
 package actions;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -49,10 +50,12 @@ public class ReportAction extends ActionBase{
         List<ReportView> reports = service.getAllPerPage(page);
 
         //全日報データの件数を取得
-        Long reportConst = service.countAll();
+        Long reportsCount = service.countAll();
 
         putRequestScope(AttributeConst.REPORTS, reports);   //取得した日報データ
-        putRequestScope(AttributeConst.REP_CONTENT, reportConst);   //全ての日報データの件数
+
+        putRequestScope(AttributeConst.REP_COUNT, reportsCount); //全ての日報データの件数
+
         putRequestScope(AttributeConst.PAGE, page); //ページ数
         putRequestScope(AttributeConst.MAX_ROW, JpaConst.ROW_PER_PAGE); //1ページに表示するレコードの数
 
@@ -66,6 +69,43 @@ public class ReportAction extends ActionBase{
         //一覧画面を表示
         forward(ForwardConst.FW_REP_INDEX); //index.jspの呼び出し
     }
+
+
+    /**
+     * 新規登録画面を表示する
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void entryNew() throws ServletException,IOException {
+
+        //リクエストスコープにユーザの承認に使用するトークンIDを設定
+        //CSRF対策用トークン
+        putRequestScope(AttributeConst.TOKEN, getTokenId());
+
+        //日報情報の空インスタンスに、日報の日付＝今日の日付を設定する
+        ReportView rv = new ReportView();
+        rv.setReportDate(LocalDate.now());
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }   // End of ReportAction
 
