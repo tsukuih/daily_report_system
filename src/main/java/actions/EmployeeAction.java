@@ -19,6 +19,7 @@ import services.EmployeeService;
  */
 public class EmployeeAction extends ActionBase {
 
+    //変数の定義（EmployeeService型のservice変数）
     private EmployeeService service;
 
     /**
