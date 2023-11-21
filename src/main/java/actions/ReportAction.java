@@ -6,10 +6,12 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import actions.views.EmployeeView;
 import actions.views.ReportView;
 import constants.AttributeConst;
 import constants.ForwardConst;
 import constants.JpaConst;
+import constants.MessageConst;
 import services.ReportService;
 
 /**
@@ -92,6 +94,69 @@ public class ReportAction extends ActionBase{
         forward(ForwardConst.FW_REP_NEW);
 
     }
+
+    /**
+     * 新規登録を行う
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void create() throws ServletException, IOException{
+
+        //CSRF対策  tokenのチエック
+        if(checkToken()) {
+
+            //日報の日付が入力されていなければ、今日の日付を設定
+            LocalDate day = null;
+            if(getRequestParam(AttributeConst.REP_DATE) == null
+                    || getRequestParam(AttributeConst.REP_DATE).equals("")) {
+                day = LocalDate.now();
+
+            }else {
+                day = LocalDate.parse(getRequestParam(AttributeConst.REP_DATE));
+            }
+
+            //セッションスコープからログイン中の従業員情報を取得
+            //LOGIN_EMP：login_employee
+            //evにはログイン中の従業員のオブジェクトが格納されている
+            EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
+
+            //パラメータの値を元に日報情報のインスタンスを作成する
+            ReportView rv = new ReportView(
+                null,
+                ev, //ログインしている従業員を、日報作成者として登録する
+                day,
+                getRequestParam(AttributeConst.REP_TITLE),  //REP_TITLE：title
+                getRequestParam(AttributeConst.REP_CONTENT), //REP_CONTENT：content_msg
+                null,
+                null);
+
+            //日報情報を登録
+            List<String> errors = service.create(rv);
+
+            if(errors.size() > 0) {
+                //登録中にエラーがあった場合
+                putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策用トークン
+                putRequestScope(AttributeConst.REPORT, rv); //入力さらた日報情報
+                putRequestScope(AttributeConst.ERR, errors); //エラーのリスト
+
+                //新規登録画面を再表示
+                forward(ForwardConst.FW_REP_NEW); //reports/new
+
+            }else {
+                //登録中にエラーがなかった場合
+
+                //セッションに登録完了のフラッシュメッセージを設定
+                //I_REGISTERED："登録が完了しました。"
+                putSessionScope(AttributeConst.FLUSH, MessageConst.I_REGISTERED.getMessage());
+
+                //一覧画面にリダイレクト
+                redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX);
+            }
+
+        }
+
+    }
+
 
 
 
