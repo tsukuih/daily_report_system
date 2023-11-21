@@ -84,26 +84,14 @@ public class ReportAction extends ActionBase{
 
         //日報情報の空インスタンスに、日報の日付＝今日の日付を設定する
         ReportView rv = new ReportView();
-        rv.setReportDate(LocalDate.now());
+        rv.setReportDate(LocalDate.now());  //reportDateプロパティに今日の日付を設定
+        //日付のみ設定済みの日報インスタンスをリクエストスコープに設定
+        putRequestScope(AttributeConst.REPORT, rv);
 
-
+        //新規登録画面を表示（new.jspの呼び出しを行う）
+        forward(ForwardConst.FW_REP_NEW);
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
