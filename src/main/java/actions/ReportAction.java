@@ -21,7 +21,6 @@ import services.ReportService;
 public class ReportAction extends ActionBase{
 
     //変数の定義（ReportService型のservice変数）
-
     private ReportService service;
 
     /**
@@ -157,14 +156,41 @@ public class ReportAction extends ActionBase{
 
     }
 
+    /**
+     * 詳細画面を表示する
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void show() throws ServletException, IOException{
+
+        //idを条件に日報データを取得する
+        //リクエストパラメータからレポートIDを取得し、そのレポートIDを元にデータベースからそのレポート情報を取得する
+        //ReportView型のrv変数は、取得したReportViewのインスタンスを参照している
+        ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
+
+        if(rv == null) {
+
+            //該当の日報データが存在しない場合はエラー画面を表示
+            //jspの呼び出し error/unknown：お探しのページは見つかりませんでした。
+            forward(ForwardConst.FW_ERR_UNKNOWN);
+
+        } else {
+
+            //取得した日報データをリクエストスコープに設定する
+            //属性名：report、値：rv（ReportView）
+            putRequestScope(AttributeConst.REPORT, rv);
+
+            //詳細画面を表示
+            //jspの呼び出し  reports/show
+            forward(ForwardConst.FW_REP_SHOW);
+        }
+
+    }
+
+
+
 
 
 
 }   // End of ReportAction
-
-
-
-
-
-
 
