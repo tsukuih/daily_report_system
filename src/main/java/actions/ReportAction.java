@@ -157,7 +157,7 @@ public class ReportAction extends ActionBase{
     }
 
     /**
-     * 詳細画面を表示する
+     * 詳細画面を表示する：show()
      * @throws ServletException
      * @throws IOException
      */
@@ -188,9 +188,86 @@ public class ReportAction extends ActionBase{
     }
 
 
+    /**
+     * 編集画面を表示する；edit()
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void edit() throws ServletException, IOException{
 
+        //idを条件に日報データを取得する
+        //リクエストパラメータからidの値を取得し、テーブルから該当する日報データを取得し、rv変数に代入する
+        //rvには、該当するidの従業員が登録した日報リストの参照値が格納されている
+        ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
 
+        //セッションスコープからログイン中の従業員情報を取得
+        //LOGIN_EMP：loginEmployee
+        EmployeeView ev = (EmployeeView) getSessionScope(AttributeConst.LOGIN_EMP);
 
+        if (rv == null || ev.getId() != rv.getEmployee().getId()) {
+
+            //該当の日報データが存在しない、または、
+            //ログインしている従業員が日報の作成者ではない場合はエラー画面を表示
+            //FW_ERR_UNKNOWN：error/unknown 「お探しのページは見つかりませんでした。」
+            forward(ForwardConst.FW_ERR_UNKNOWN);
+
+        } else {
+
+            //CSRF対策用トークン
+            putRequestScope(AttributeConst.TOKEN, getTokenId());
+
+            //取得した日報データ
+            putRequestScope(AttributeConst.REPORT, rv);
+
+            //編集画面を表示
+            //FW_REP_EDIT："reports/edit"
+            forward(ForwardConst.FW_REP_EDIT);
+
+        }
+    }
+
+    /**
+     * 更新を行う
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void update() throws ServletException, IOException {
+
+        //CSRF対策 tokenのチェック
+        if (checkToken()) {
+
+            //idを条件に日報データを取得する
+            ReportView rv = service.findOne(toNumber(getRequestParam(AttributeConst.REP_ID)));
+
+            //入力された日報内容を設定する
+            rv.setReportDate(toLocalDate(getRequestParam(AttributeConst.REP_DATE)));
+            rv.setTitle(getRequestParam(AttributeConst.REP_TITLE));
+            rv.setContent(getRequestParam(AttributeConst.REP_CONTENT));
+
+            //日報データを更新する
+            List<String> errors = service.update(rv);
+
+            if (errors.size() > 0) {
+                //更新中にエラーが発生した場合
+
+                putRequestScope(AttributeConst.TOKEN, getTokenId()); //CSRF対策用トークン
+                putRequestScope(AttributeConst.REPORT, rv); //入力された日報情報
+                putRequestScope(AttributeConst.ERR, errors); //エラーのリスト
+
+                //編集画面を再表示
+                forward(ForwardConst.FW_REP_EDIT);
+            } else {
+                //更新中にエラーがなかった場合
+
+                //セッションに更新完了のフラッシュメッセージを設定
+                putSessionScope(AttributeConst.FLUSH, MessageConst.I_UPDATED.getMessage());
+
+                //一覧画面にリダイレクト
+                redirect(ForwardConst.ACT_REP, ForwardConst.CMD_INDEX);
+
+            }
+        }
+    }
 
 }   // End of ReportAction
 

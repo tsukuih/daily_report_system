@@ -16,10 +16,10 @@
             <tbody>
                 <tr>
                     <th>氏名</th>
-                    <th><c:out value="${report.employee.name}" /></th>
+                    <td><c:out value="${report.employee.name}" /></td>
                 </tr>
                 <tr>
-                    <td>日付</td>
+                    <th>日付</th>
                     <fmt:parseDate value="${report.reportDate}" pattern="yyyy-MM-dd" var="reportDay" type="date" />
                     <td><fmt:formatDate value='${reportDay}' pattern='yyyy-MM-dd' /></td>
                 </tr>
@@ -37,21 +37,17 @@
                     <fmt:parseDate value="${report.updatedAt}" pattern="yyyy-MM-dd'T'HH:mm:ss" var="updateDay" type="date" />
                     <td><fmt:formatDate value="${updateDay}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
                 </tr>
-
             </tbody>
         </table>
 
-        <%-- 作成者がログインしている場合のみ、編集画面へのリンクを表示する --%>
-        <%-- ログインしている従業員IDと日報と従業員IDが一致した場合 --%>
         <c:if test="${sessionScope.login_employee.id == report.employee.id}">
-                <p>
-                    <a href="<c:url value='?action=${actRep}&command=${commEdt}&id=${report.id}' />">この日報を編集する</a>
-                </p>
+            <p>
+                <a href="<c:url value='?action=${actRep}&command=${commEdt}&id=${report.id}' />">この日報を編集する</a>
+            </p>
         </c:if>
 
         <p>
             <a href="<c:url value='?action=${actRep}&command=${commIdx}' />">一覧に戻る</a>
         </p>
-
     </c:param>
 </c:import>
