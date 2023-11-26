@@ -12,10 +12,10 @@
 
 <%--エラーがある場合、全てのエラーメッセージを表示する --%>
 <c:if test="${errors != null}">
-    <div id="flash_error">
+    <div id="flush_error">
         入力内容にエラーがあります。<br>
         <c:forEach var="error" items="${errors}">
-            ・<c:out value="${error}" />
+            ・<c:out value="${error}" /><br>
         </c:forEach>
     </div>
 </c:if>
